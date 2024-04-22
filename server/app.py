@@ -19,11 +19,11 @@ def index():
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
-    image_name = 'JAXA/ALOS/AW3D30/V2_2'
+    image_name = 'LANDSAT/LC08/C01/T1_TOA/LC08_044034_20140318'
 
     # Define the visualization parameters.
     vis_params = {
-        'bands': ['AVE_DSM', 'AVE_STK', 'AVE_MSK'],
+        'bands': ['B5', 'B4', 'B3'],
         'min': 0,
         'max': 0.5,
         'gamma': [0.95, 1.1, 1]
