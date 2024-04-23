@@ -3,10 +3,8 @@ from flask import request, jsonify
 from flask_cors import CORS
 from utils import *
 
-
 app = Flask(__name__)
 CORS(app)
-
 
 @app.before_request
 def before():
@@ -15,11 +13,9 @@ def before():
     credentials = ee.ServiceAccountCredentials(service_account, service_account_key)
     ee.Initialize(credentials)
 
-
 @app.route('/')
 def hello_world():
     return 'Hello World!'
-
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
@@ -35,7 +31,6 @@ def test():
 
     url = image_to_map_id(image_name, vis_params)
     return jsonify(url), 200
-
 
 @app.route('/meanImageByCollection', methods=['POST'])
 def mean_image_by_collections():
@@ -54,6 +49,53 @@ def mean_image_by_collections():
                 raise Exception("invalid request type, please use json")
         else:
             raise Exception("invalid request type, please use json")
+    except Exception as e:
+        values = {
+            'errMsg': str(e)
+        }
+    return jsonify(values), 200
+
+@app.route('/timeSeriesIndex', methods=['POST'])
+def time_series_index():
+    try:
+        request_json = request.get_json()
+        if request_json:
+            geometry = request_json.get('geometry', None)
+            collection_name = request_json.get('collectionNameTimeSeries', None)
+            if geometry:
+                values = get_time_series_by_collection_and_index(collection_name,
+                                                                     request_json.get('indexName', None),
+                                                                     float(request_json.get('scale', 30)),
+                                                                     geometry,
+                                                                     request_json.get('dateFromTimeSeries', None),
+                                                                     request_json.get('dateToTimeSeries', None),
+                                                                     request_json.get('reducer', None)
+                                                                     )
+            else:
+                raise Exception
+        else:
+            raise Exception
+    except Exception as e:\
+        values = {
+            'errMsg': str(e)
+        }
+    return jsonify(values), 200
+
+@app.route('/getAvailableBands', methods=['POST'])
+def get_available_bands():
+    """  """
+    try:
+        request_json = request.get_json()
+        if request_json:
+            image_collection_name = request_json.get('imageCollection', None)
+            image_name = request_json.get('image', None)
+            if image_collection_name is None:
+                values = list_available_bands(image_name, True)
+            else:
+                values = list_available_bands(image_collection_name, False)
+        else:
+            raise Exception(
+                "Need either image or imageCollection parameter containing the full name")
     except Exception as e:
         values = {
             'errMsg': str(e)
