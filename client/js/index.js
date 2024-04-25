@@ -1,5 +1,6 @@
 $(function () {
-  loadMap("map", ol.proj.transform([-122, 37], "EPSG:4326", "EPSG:3857"), 10);
+  loadMap("map", ol.proj.transform([69, 31], "EPSG:4326", "EPSG:3857"), 6);
+  // loadMap("map", ol.proj.fromLonLat([70.08147101184834, 31.39360019224729]), 15);
   initRequestModal();
 });
 
