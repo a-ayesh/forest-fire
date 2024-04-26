@@ -49,10 +49,12 @@ function openResults() {
   html.innerHTML = "<h3 class='fw-bold py-3 border-bottom border-2'><center>Results<center></h3>";
   html.innerHTML += "<h5 class='fw-bold ps-1'>Coordinates [Lon, Lat]:</h5>";
   html.innerHTML += "<p class='ps-2'>[70.08147101184834, 31.39360019224729]</p>";
-  html.innerHTML += "<h5 class='fw-bold ps-1'>Original Image:</h5>";
-  html.innerHTML += "<img onclick='enlarge()' class='sat-img' src='./img/results/norm-res.jpg' height='200rem'>";
-  html.innerHTML += "<h5 class='fw-bold ps-1'>Processed Image:</h5>";
-  html.innerHTML += "<img class='sat-img' src='./img/results/super-res.jpg' height='200rem'>";
+  html.innerHTML += "<h5 class='fw-bold ps-1 mt-3'>Original Image:</h5>";
+  html.innerHTML += "<center><img class='sat-img' src='./img/results/norm-res.jpg' height='400rem'><center>";
+  html.innerHTML += "<h5 class='fw-bold ps-1 mt-3'>Processed Image:</h5>";
+  html.innerHTML += "<center><img class='sat-img' src='./img/results/super-res.jpg' height='400rem'><center>";
+  html.innerHTML += "<h5 class='fw-bold ps-1 mt-3'>forest fire segmentation on date 26/04/24:</h5>";
+  html.innerHTML += "<center><img class='sat-img' src='./img/results/pred.jpg' height='400rem'><center>";
   CenterMap(70.08147101184834, 31.39360019224729);
 }
 

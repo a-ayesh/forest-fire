@@ -82,6 +82,7 @@ a:has(> img.DLL-icon) {
  */
 
  .sidebar {
+  height: calc(84vh);
   background-color: white;
   /* position: fixed;
   top: 0;

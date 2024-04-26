@@ -52,7 +52,7 @@
       </div>
       <div class="row main">
         <!-- Sidebar -->
-        <div class="col-3 border-end border-2 sidebar">
+        <div class="col-3 border-end border-2 sidebar" style="overflow-y: scroll; overflow-x: hidden;">
           <div class="flex-shrink-0 p-3" id="sidebar">
             <h3 class='fw-bold py-3 border-bottom border-2'><center>Dashboard<center></h3>
               <p class="fw-bold ps-1">Fire hazard by area in the last 10 years:</p>
@@ -74,11 +74,11 @@
               </select>
               <div class="input-group mb-2">
                 <span class="input-group-text">No. Damaged Sites</span>
-                <input id="damagedSites" type="text" class="form-control" readonly>
+                <input id="damagedSites" type="text" class="form-control" readonly value="26">
               </div>
               <div class="input-group mb-3">
                 <span class="input-group-text">Area Burnt (Ha)</span>
-                <input id="areaBurnt" type="text" class="form-control" readonly>
+                <input id="areaBurnt" type="text" class="form-control" readonly value="259.58">
               </div>
               <script>
                 document.getElementById('select-location').addEventListener('change', function() {
@@ -136,6 +136,7 @@
           <div id="map" class="map"></div>
         </div>
       </div>
+      <!-- <div id="openImage" style="z-index: 20000; position:absolute; height: 100%; width: 100%; background-color: black; left: 0px; top: 0px; display: none; opacity: 0.4;"><button class="btn btn-primary" onclick="closeImage()">Close</button></div> -->
       <!-- Footer -->
       <div class="container-fluid border-top border-2">
         <footer class="py-3 my-4">
