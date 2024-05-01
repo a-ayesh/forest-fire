@@ -2,25 +2,43 @@ let map;
 const api_url = "http://127.0.0.1:5000/";
 const key = "gKX0coub6faLUp0QxHew";
 
-function CenterMap(long, lat) {
+function CenterMap(long, lat, zoom) {
   console.log("Long: " + long + " Lat: " + lat);
   //map.getView().setCenter(ol.proj.transform([long, lat], 'EPSG:4326', 'EPSG:3857'));
   map.getView().setCenter(ol.proj.fromLonLat([long, lat]));
-  map.getView().setZoom(15);
+  map.getView().setZoom(zoom);
+}
+
+function clusterOverlay(...loc) {
+  console.log(loc);
+  let imageExtent;
+  let url;
+  switch (loc[0]) {
+    case 70.06147101184834:
+      imageExtent = [70.06578196494957, 31.37357160969397, 70.09738793986352, 31.4132577662616]; // Example extent, adjust as needed
+      url = "./img/results/pred.png";
+      break;
+    case 71.20992756451624:
+      imageExtent = [71.17990777733253, 33.88061302139612, 71.23997592639662, 33.92077292336259]; // Example extent, adjust as needed
+      url = "./img/results/man.png";
+      break;
+    default:
+      console.log("Unknown Location");
+  }
+
+  const imageLayer = new ol.layer.Image({
+    source: new ol.source.ImageStatic({
+      url: url,
+      projection: 'EPSG:4326',
+      imageExtent: imageExtent,
+    }),
+    zIndex: 1000, // Adjust the zIndex if needed
+  });
+
+  map.addLayer(imageLayer);
 }
 
 function loadMap(target, center, zoom) {
-  // const raster = new ol.layer.Tile({
-  //   source: new ol.source.OSM(),
-  // });
-  // map = new ol.Map({
-  //   layers: [raster],
-  //   target: target,
-  //   view: new ol.View({
-  //     center: center,
-  //     zoom: zoom,
-  //   }),
-  // });
   const attribution = new ol.control.Attribution({
     collapsible: false,
   });

@@ -22,30 +22,36 @@
     <script src="js/index.js"></script>
   </head>
   <body>
-    <!-- Navbar -->
     <div class="container-fluid p-0">
+      <!-- Navbar -->
       <div class="row border-bottom border-2">
         <div class="col-12">
           <nav class="navbar navbar-expand">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#"><img src="./img/dll.png" alt="DLL-Logo" class="DLL-icon"></a>
-                <form role="search" class="ms-auto">
-                  <div class="input-group flex-nowrap">
-                    <input class="form-control border rounded-start" type="search" placeholder="Search Dashboard..." aria-label="Search">
-                    <span class="input-group-text" id="addon-wrapping"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg></span>
-                  </div>
-                </form>
-                <div class="dropdown">
-                  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span>
-                      <img src="./img/user.jpg" alt="User-Icon" class="user-icon">
-                    </span>
-                    DLL Admin
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item active" href="#">Sign out</a></li>
-                  </ul>
+              <!-- Logo -->
+              <a class="navbar-brand" href="#"><img src="./img/dll.png" alt="DLL-Logo" class="DLL-icon"></a> 
+              <!-- Searchbar --> 
+              <form role="search" class="ms-auto">
+                <div class="input-group flex-nowrap">
+                  <input class="form-control border rounded-start" type="search" placeholder="Search Dashboard..." aria-label="Search">
+                  <span class="input-group-text" id="addon-wrapping"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg></span>
                 </div>
+              </form>
+              <!-- Login -->
+              <div class="dropdown ms-5">
+                <button class="btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span class="pe-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                      <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                    </svg>
+                  </span>
+                  DLL Admin
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item active" href="#">Sign out</a></li>
+                </ul>
+              </div>
             </div>
           </nav>
         </div>
@@ -55,70 +61,47 @@
         <div class="col-3 border-end border-2 sidebar" style="overflow-y: scroll; overflow-x: hidden;">
           <div class="flex-shrink-0 p-3" id="sidebar">
             <h3 class='fw-bold py-3 border-bottom border-2'><center>Dashboard<center></h3>
-              <p class="fw-bold ps-1">Fire hazard by area in the last 10 years:</p>
-              <select id="select-location" class="form-select mb-2" onmousedown="if(this.options.length>5){this.size=5;}"  onchange='this.size=0;' onblur="this.size=0;">
-                <option value="Haripur" selected>Haripur</option>
-                <option value="Galis">Galis</option>
-                <option value="Siran">Siran</option>
-                <option value="Kaghan">Kaghan</option>
-                <option value="Agror Tanawal">Agror Tanawal</option>
-                <option value="Torghar">Torghar</option>
-                <option value="Hazara Tribal">Hazara Tribal</option>
-                <option value="Lower Kohistan">Lower Kohistan</option>
-                <option value="Upper Kohistan">Upper Kohistan</option>
-                <option value="Daur W/Shed">Daur W/Shed</option>
-                <option value="Kunhar W/Shed">Kunhar W/Shed</option>
-                <option value="Unhar W/Shed">Unhar W/Shed</option>
-                <option value="Kohistan W/Shed">Kohistan W/Shed</option>
-                <option value="Buner W/Shed">Buner W/Shed</option>
-              </select>
-              <div class="input-group mb-2">
-                <span class="input-group-text">No. Damaged Sites</span>
-                <input id="damagedSites" type="text" class="form-control" readonly value="26">
-              </div>
-              <div class="input-group mb-3">
-                <span class="input-group-text">Area Burnt (Ha)</span>
-                <input id="areaBurnt" type="text" class="form-control" readonly value="259.58">
-              </div>
-              <script>
-                document.getElementById('select-location').addEventListener('change', function() {
-                    var selectedValue = this.value;
-                    var damagedSites, areaBurntl
-                    switch(selectedValue) {
-                        case 'Haripur':
-                        damagedSites = 26; areaBurnt = 259.58; break;
-                        case 'Galis':
-                        damagedSites = 78; areaBurnt = 1619; break;
-                        case 'Siran':
-                        damagedSites = 75; areaBurnt = 2069; break;
-                        case 'Kaghan':
-                        damagedSites = 19; areaBurnt = 274.48; break; 
-                        case 'Agror Tanawal':
-                        damagedSites = 8; areaBurnt = 41; break;
-                        case 'Torghar':
-                        damagedSites = 6; areaBurnt = 190; break;
-                        case 'Hazara Tribal':
-                        damagedSites = 6; areaBurnt = 126; break;
-                        case 'Lower Kohistan':
-                        damagedSites = 4; areaBurnt = 11.81; break;
-                        case 'Upper Kohistan':
-                        damagedSites = 17; areaBurnt = 40; break;
-                        case 'Daur W/Shed':
-                        damagedSites = 51; areaBurnt = 378.12; break;
-                        case 'Kunhar W/Shed':
-                        damagedSites = 31; areaBurnt = 501; break;
-                        case 'Unhar W/Shed':
-                        damagedSites = 12; areaBurnt = 116.5; break;
-                        case 'Kohistan W/Shed': 
-                        damagedSites = 1; areaBurnt = 20; break;
-                        case 'Buner W/Shed':
-                        damagedSites = 21; areaBurnt = 808.19; break;
-                        default:
-                        damagedSites = 0; areaBurnt = 0; 
-                    }
-                    document.getElementById('damagedSites').value = damagedSites;
-                    document.getElementById('areaBurnt').value = areaBurnt;
-                });
+            <p class="fw-bold ps-1">Fire hazard by area in the last 10 years:</p>
+            <select id="select-location" class="form-select mb-2" onmousedown="if(this.options.length>5){this.size=5;}"  onchange='this.size=0;' onblur="this.size=0;"></select>
+            <script>
+              let locations = {
+                  'Haripur': { damagedSites: 26, areaBurnt: 259.58 },
+                  'Galis': { damagedSites: 78, areaBurnt: 1619 },
+                  'Siran': { damagedSites: 75, areaBurnt: 2069 },
+                  'Kaghan': { damagedSites: 19, areaBurnt: 274.48 },
+                  'Agror Tanawal': { damagedSites: 8, areaBurnt: 41 },
+                  'Torghar': { damagedSites: 6, areaBurnt: 190 },
+                  'Hazara Tribal': { damagedSites: 6, areaBurnt: 126 },
+                  'Lower Kohistan': { damagedSites: 4, areaBurnt: 11.81 },
+                  'Upper Kohistan': { damagedSites: 17, areaBurnt: 40 },
+                  'Daur W/Shed': { damagedSites: 51, areaBurnt: 378.12 },
+                  'Kunhar W/Shed': { damagedSites: 31, areaBurnt: 501 },
+                  'Unhar W/Shed': { damagedSites: 12, areaBurnt: 116.5 },
+                  'Kohistan W/Shed': { damagedSites: 1, areaBurnt: 20 },
+                  'Buner W/Shed': { damagedSites: 21, areaBurnt: 808.19 }
+              };
+              let select = document.getElementById('select-location');
+              for (let location in locations) {
+                  let option = document.createElement('option');
+                  option.value = location;
+                  option.text = location;
+                  select.appendChild(option);
+              }
+            </script>
+            <div class="input-group mb-2">
+              <span class="input-group-text">No. Damaged Sites</span>
+              <input id="damagedSites" type="text" class="form-control" disabled value="26">
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text">Area Burnt (Ha)</span>
+              <input id="areaBurnt" type="text" class="form-control" disabled value="259.58">
+            </div>
+            <script>
+              document.getElementById('select-location').addEventListener('change', function() {
+                  let selectedValue = this.value;
+                  document.getElementById('damagedSites').value = locations[selectedValue].damagedSites;
+                  document.getElementById('areaBurnt').value = locations[selectedValue].areaBurnt;
+              });
             </script>
           </div>
         </div>
@@ -136,7 +119,23 @@
           <div id="map" class="map"></div>
         </div>
       </div>
-      <!-- <div id="openImage" style="z-index: 20000; position:absolute; height: 100%; width: 100%; background-color: black; left: 0px; top: 0px; display: none; opacity: 0.4;"><button class="btn btn-primary" onclick="closeImage()">Close</button></div> -->
+      <!-- Modal -->
+      <div class="modal" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-body">
+              <div class="row justify-content-center">
+                <div class="col">
+                  <img id="modalImage" class="img-fluid pe-4 border-end border-2" style="height: 100%; margin-left: auto; margin-right: auto;" src="" alt="">
+                </div>
+                <div class="col">
+                  <div id="zoomResult" class="img-zoom-result"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- Footer -->
       <div class="container-fluid border-top border-2">
         <footer class="py-3 my-4">

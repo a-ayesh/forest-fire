@@ -1,228 +1,108 @@
-﻿function initRequestModal() {
-  var modal = document.createElement("div");
-  modal.classList.add("modal", "fade");
-  modal.setAttribute("id", "requestModal");
-  modal.setAttribute("tabindex", "-1");
-  modal.setAttribute("role", "dialog");
-  modal.setAttribute("aria-labelledby", "requestModalLabel");
-  modal.setAttribute("aria-hidden", "true");
-  modal.innerHTML =
-    '<div class="modal-dialog" role="document">' +
-    '<div class="modal-content"></div>' +
-    "</div>";
-  document.body.appendChild(modal);
-  return modal;
-}
-
-function getRequestModal() {
-  return document.getElementById("requestModal");
-}
-
-function setRequestModalContent(html) {
-  getRequestModal().querySelector(".modal-content").innerHTML = html;
-}
-
-function toggleSideBar() {
-  if ($("#main").width() === 0) {
-    $("#sidebar").hide();
-    $("#main").width("100%");
-  } else {
-    $("#sidebar").attr("style", "display: block !important");
-    $("#main").width("0");
-  }
-  map.updateSize();
-}
-
-function toggleCategory(which, icon) {
-  if ($("#" + which).is(":visible")) {
-    $("#" + which).hide();
-    $("#" + icon).attr("data-feather", "plus-circle");
-  } else {
-    $("#" + which).show();
-    $("#" + icon).attr("data-feather", "minus-circle");
-  }
-  feather.replace();
-}
-
-function openResults() {
-  let html = document.getElementById("sidebar");
-  html.innerHTML = "<h3 class='fw-bold py-3 border-bottom border-2'><center>Results<center></h3>";
-  html.innerHTML += "<h5 class='fw-bold ps-1'>Coordinates [Lon, Lat]:</h5>";
-  html.innerHTML += "<p class='ps-2'>[70.08147101184834, 31.39360019224729]</p>";
-  html.innerHTML += "<h5 class='fw-bold ps-1 mt-3'>Original Image:</h5>";
-  html.innerHTML += "<center><img class='sat-img' src='./img/results/norm-res.jpg' height='400rem'><center>";
-  html.innerHTML += "<h5 class='fw-bold ps-1 mt-3'>Processed Image:</h5>";
-  html.innerHTML += "<center><img class='sat-img' src='./img/results/super-res.jpg' height='400rem'><center>";
-  html.innerHTML += "<h5 class='fw-bold ps-1 mt-3'>forest fire segmentation on date 26/04/24:</h5>";
-  html.innerHTML += "<center><img class='sat-img' src='./img/results/pred.jpg' height='400rem'><center>";
-  CenterMap(70.08147101184834, 31.39360019224729);
-}
-
+﻿
 function openDashboard() {
   location.reload();
 }
 
-/**
- * Loads route from the panel click
- * Builds and shows form to enter specific parameters based on user selection
- * and route requirements.
- * Clears the map layers
- * @param {any} which
- */
-function loadparameterPanel(which) {
-  removeLayer("geeLayer");
-  var html = getBeginModalUI(which);
-  switch (which) {
-    case "test":
-      html += getTestUI();
-      break;
-    case "image":
-      html += getImageNameUI() + "<br />" + getVisParamsUI();
-      break;
-    case "meanImageByCollection":
-      html += getImageNameUI();
-      html += getFromDateUI();
-      html += getToDateUI();
-      html += getVisParamsUI();
-      break;
-    case "timeSeriesIndex":
-      html += getDrawGeometryBtn();
-      html += getImageNameWithBandSelectorUI();
-      html += getFromDateUI();
-      html += getToDateUI();
-      html += getReducerUI();
-      html += getScaleUI();
-      break;
-    default:
-    // code block
+function openResults() {
+  let html = document.getElementById("sidebar");
+  html.innerHTML =  `<h3 class='fw-bold py-3 border-bottom border-2'><center>Results<center></h3>
+  <p class='fw-bold ps-1'>Coordinates [Lon, Lat]:</p>
+  <select id='select-location' class='form-select mb-2' onmousedown='if(this.options.length>5){this.size=5;}'  onchange='this.size=0;' onblur='this.size=0;'></select>`;
+  
+  let selectedValue = [70.06147101184834, 31.38360019224729];
+  let select = document.getElementById('select-location');
+  let option = document.createElement('option');
+  option.value = JSON.stringify([70.06147101184834, 31.38360019224729]);
+  option.text = JSON.stringify([70.06147101184834, 31.38360019224729]);
+  select.appendChild(option);
+  let option2 = document.createElement('option');
+  option2.value = JSON.stringify([71.20992756451624, 33.89064217605153]);
+  option2.text = JSON.stringify([71.20992756451624, 33.89064217605153]);
+  select.appendChild(option2);
+  
+  document.getElementById('select-location').addEventListener('change', function() {
+    selectedValue = JSON.parse(this.value); // Parse the value to convert it back to an array
+    CenterMap(selectedValue[0], selectedValue[1], 12); // Call CenterMap with the new selected value
+    console.log("hi")
+  });
+  
+  html.innerHTML +=   `<button class='btn btn-primary w-100 mt-2' onclick='showImage("./img/results/norm-res.jpg")'>Show Pre-Fire</button>
+  <button class='btn btn-primary w-100 mt-2' onclick='showImage("./img/results/super-res.jpg")'>Show Post-Fire</button>
+  <button class='btn btn-primary w-100 mt-2' onclick='clusterOverlay(${selectedValue})'>Show Clustering</button>
+  <p class='fw-bold ps-1 mt-3'>Original Image:</p>
+  <center><img class='sat-img' src='./img/results/norm-res.jpg' onclick='showImage("./img/results/norm-res.jpg")' height='400rem'></center>
+  <p class='fw-bold ps-1 mt-2'>Processed Image:</p>
+  <center><img class='sat-img' src='./img/results/super-res.jpg' onclick='showImage("./img/results/super-res.jpg")' height='400rem'></center>`;
+  
+  CenterMap(selectedValue[0], selectedValue[1], 12);
+}
+
+function showImage(imageUrl) {
+  const modal = new bootstrap.Modal(document.getElementById('imageModal'), {
+    keyboard: true
+  });
+  const modalImage = document.getElementById('modalImage');
+  modalImage.src = imageUrl;
+  modal.show();
+
+  // Call imageZoom after the image has loaded
+  modalImage.onload = function() {
+    imageZoom("modalImage", "zoomResult");
+  };
+}
+
+function imageZoom(imgID, resultID) {
+  var img, lens, result, cx, cy;
+  img = document.getElementById(imgID);
+  result = document.getElementById(resultID);
+  /* Create lens: */
+  lens = document.createElement("DIV");
+  lens.setAttribute("class", "img-zoom-lens");
+  /* Insert lens: */
+  img.parentElement.insertBefore(lens, img);
+  /* Calculate the ratio between result DIV and lens: */
+  cx = result.offsetWidth / lens.offsetWidth;
+  cy = result.offsetHeight / lens.offsetHeight;
+  /* Set background properties for the result DIV */
+  result.style.backgroundImage = "url('" + img.src + "')";
+  result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
+  /* Execute a function when someone moves the cursor over the image, or the lens: */
+  lens.addEventListener("mousemove", moveLens);
+  img.addEventListener("mousemove", moveLens);
+  /* And also for touch screens: */
+  lens.addEventListener("touchmove", moveLens);
+  img.addEventListener("touchmove", moveLens);
+  function moveLens(e) {
+    var pos, x, y;
+    /* Prevent any other actions that may occur when moving over the image */
+    e.preventDefault();
+    /* Get the cursor's x and y positions: */
+    pos = getCursorPos(e);
+    /* Calculate the position of the lens: */
+    x = pos.x - (lens.offsetWidth / 5);
+    y = pos.y - (lens.offsetHeight / 5);
+    /* Prevent the lens from being positioned outside the image: */
+    if (x > img.width - lens.offsetWidth) {x = img.width - lens.offsetWidth;}
+    if (x < 0) {x = 0;}
+    if (y > img.height - lens.offsetHeight) {y = img.height - lens.offsetHeight;}
+    if (y < 0) {y = 0;}
+    /* Set the position of the lens: */
+    lens.style.left = x + "px";
+    lens.style.top = y + "px";
+    /* Display what the lens "sees": */
+    result.style.backgroundPosition = "-" + (x * cx) + "px -" + (y * cy) + "px";
   }
-
-  html += getCloseModalUI(which);
-  setRequestModalContent(html);
-  jQuery(requestModal).modal("show");
-}
-
-function getBeginModalUI(route) {
-  return (
-    '<div class="modal-header">' +
-    '<h5 class="modal-title" id="requestModalLabel">Route: ' +
-    route +
-    "</h5>" +
-    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
-    '<span aria-hidden="true">&times;</span>' +
-    "</button>" +
-    "</div>" +
-    '<div class="modal-body">'
-  );
-}
-
-function getTestUI() {
-  return (
-    '<div class="form-group">' +
-    "<label>Nothing needed, all code in in server, please click Submit</label >" +
-    "</div>"
-  );
-}
-
-function getImageNameUI() {
-  return (
-    '<div class="form-group">' +
-    '<label for="imageName">Image Name</label >' +
-    '<input type="text" id="imageName" placeholder="MCD12Q1/MCD12Q1_005_2001_01_01" class="form-control"/>' +
-    "</div>"
-  );
-}
-
-function getFromDateUI() {
-  return (
-    '<div class="form-group">' +
-    '<label for="fromDate">From Date</label >' +
-    '<input type="date" id="fromDate" placeholder="YYYY-MM-DD" class="form-control"/>' +
-    "</div>"
-  );
-}
-
-function getToDateUI() {
-  return (
-    '<div class="form-group">' +
-    '<label for="toDate">To Date</label >' +
-    '<input type="date" id="toDate" placeholder="YYYY-MM-DD" class="form-control"/>' +
-    "</div>"
-  );
-}
-
-function getVisParamsUI() {
-  return (
-    '<div class="form-group">' +
-    '<label for="visParams">Vision Parameters</label >' +
-    '<textarea id="visParams" class="form-control" placeholder="{&quot;bands&quot;: &quot;B4, B3, B2&quot;, ' +
-    "&quot; min &quot;:0," +
-    "&quot; max &quot;: 0.3" +
-    '} " rows="4" field_signature="4290505990" form_signature="8463551438221821150" style="overflow: hidden; overflow - wrap: break-word; resize: vertical; "></textarea>' +
-    "</div>"
-  );
-}
-
-function getDrawGeometryBtn() {
-  return (
-    '<div class="form-group">' +
-    '<label for="draw">Draw polygon</label >' +
-    '<button id="draw" class="form-control" onclick="drawPolyStart()">Draw polygon</button>' +
-    '<label id="drawnPolygon" style="word-wrap: break-word;width:100%;"></label>' +
-    "</div>"
-  );
-}
-
-function getImageNameWithBandSelectorUI() {
-  return (
-    '<div class="form-group">' +
-    '<label for="imageName">Image Name</label >' +
-    '<input type="text" id="imageName" placeholder="MCD12Q1/MCD12Q1_005_2001_01_01" class="form-control"/>' +
-    "</div>" +
-    '<button type="button" class="btn btn-primary" onclick="loadBands()">Load Bands</button>' +
-    '<div class="form-group">' +
-    '<label for="bandselector">Available Bands</label >' +
-    '<select name="bandselector" class="form-control" id="bandselector"></select>' +
-    "</div>"
-  );
-}
-
-function getReducerUI() {
-  return (
-    '<div class="form-group">' +
-    '<label for="reducer">Reducer</label >' +
-    '<select name="reducer" class="form-control" id="reducer">' +
-    '<option label="Min" value="min">Min</option>' +
-    '<option label="Max" value="max">Max</option>' +
-    ' <option label="Mean" value="mean">Mean</option>' +
-    "</select > " +
-    "</div>"
-  );
-}
-
-function getScaleUI() {
-  return (
-    '<div class="form-group">' +
-    '<label for="scale">Scale</label >' +
-    '<input type="text" id="scale" placeholder="30" class="form-control"/>' +
-    "</div>"
-  );
-}
-
-function getCloseModalUI(route) {
-  return (
-    '<span id="modalerror" style="color:red; font-weight:600;"></span></div>' +
-    '<div class="modal-footer">' +
-    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>' +
-    '<button type="button" class="btn btn-primary" onclick="enableRequestUI(); ' +
-    route +
-    '();">Submit</button>' +
-    "</div>"
-  );
-}
-
-function enableRequestUI() {
-  jQuery(requestModal).modal("hide");
-  toggleSideBar();
-  $("#overlay").show();
+  function getCursorPos(e) {
+    var a, x = 0, y = 0;
+    e = e || window.event;
+    /* Get the x and y positions of the image: */
+    a = img.getBoundingClientRect();
+    /* Calculate the cursor's x and y coordinates, relative to the image: */
+    x = e.pageX - a.left;
+    y = e.pageY - a.top;
+    /* Consider any page scrolling: */
+    x = x - window.pageXOffset;
+    y = y - window.pageYOffset;
+    return {x : x, y : y};
+  }
 }
