@@ -25,7 +25,7 @@ function clusterOverlay(...loc) {
     default:
       console.log("Unknown Location");
   }
-
+  console.log(url);
   const imageLayer = new ol.layer.Image({
     source: new ol.source.ImageStatic({
       url: url,

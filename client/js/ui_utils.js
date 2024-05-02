@@ -19,13 +19,6 @@ function openResults() {
   option2.value = JSON.stringify([71.20992756451624, 33.89064217605153]);
   option2.text = JSON.stringify([71.20992756451624, 33.89064217605153]);
   select.appendChild(option2);
-  
-  document.getElementById('select-location').addEventListener('change', function() {
-    selectedValue = JSON.parse(this.value); // Parse the value to convert it back to an array
-    CenterMap(selectedValue[0], selectedValue[1], 12); // Call CenterMap with the new selected value
-    console.log("hi")
-  });
-  
   html.innerHTML +=   `<button class='btn btn-primary w-100 mt-2' onclick='showImage("./img/results/norm-res.jpg")'>Show Pre-Fire</button>
   <button class='btn btn-primary w-100 mt-2' onclick='showImage("./img/results/super-res.jpg")'>Show Post-Fire</button>
   <button class='btn btn-primary w-100 mt-2' onclick='clusterOverlay(${selectedValue})'>Show Clustering</button>
@@ -33,6 +26,12 @@ function openResults() {
   <center><img class='sat-img' src='./img/results/norm-res.jpg' onclick='showImage("./img/results/norm-res.jpg")' height='400rem'></center>
   <p class='fw-bold ps-1 mt-2'>Processed Image:</p>
   <center><img class='sat-img' src='./img/results/super-res.jpg' onclick='showImage("./img/results/super-res.jpg")' height='400rem'></center>`;
+  
+  document.getElementById('select-location').addEventListener('change', function() {
+    selectedValue = JSON.parse(this.value); // Parse the value to convert it back to an array
+    CenterMap(selectedValue[0], selectedValue[1], 12); // Call CenterMap with the new selected value
+    console.log("hi")
+  });
   
   CenterMap(selectedValue[0], selectedValue[1], 12);
 }
